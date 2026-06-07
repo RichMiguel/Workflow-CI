@@ -1,0 +1,51 @@
+name: Retrain Model
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  retrain:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install MLflow
+      run: |
+        pip install mlflow
+
+    - name: Run MLflow Project
+      run: |
+        cd MLProject
+        mlflow run .
+
+    - name: Upload MLflow Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: mlflow-results
+        path: |
+          MLProject/mlruns
+          MLProject/mlflow.db
+    
+    - name: Upload Database
+      uses: actions/upload-artifact@v4
+      with:
+        name: mlflow-db
+        path: MLProject/mlflow.db
