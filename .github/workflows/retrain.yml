@@ -36,16 +36,10 @@ jobs:
         cd MLProject
         python modelling.py
 
-    - name: Upload MLflow Artifacts
+    - name: Upload to GitHub
       uses: actions/upload-artifact@v4
       with:
         name: mlflow-results
         path: |
           MLProject/mlruns
           MLProject/mlflow.db
-    
-    - name: Upload Database
-      uses: actions/upload-artifact@v4
-      with:
-        name: mlflow-db
-        path: MLProject/mlflow.db
