@@ -33,7 +33,7 @@ jobs:
 
     - name: Run MLflow Project
       run: |
-        mlflow run ./MLProject
+        mlflow run ./MLProject --env-manager local
 
     - name: Upload to GitHub
       uses: actions/upload-artifact@v4
