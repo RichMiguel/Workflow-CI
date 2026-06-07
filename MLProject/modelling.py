@@ -20,33 +20,29 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=42
 )
 
-mlflow.set_tracking_uri("sqlite:///mlflow.db")
-mlflow.set_experiment("Housing_Price_Prediction")
+model = RandomForestRegressor(
+    n_estimators=100,
+    max_depth=10,
+    min_samples_split=5,
+    random_state=42
+)
 
-with mlflow.start_run():
-    model = RandomForestRegressor(
-        n_estimators=100,
-        max_depth=10,
-        min_samples_split=5,
-        random_state=42
-    )
+model.fit(X_train, y_train)
 
-    model.fit(X_train, y_train)
+pred = model.predict(X_test)
 
-    pred = model.predict(X_test)
+mae = mean_absolute_error(y_test, pred)
+r2 = r2_score(y_test, pred)
 
-    mae = mean_absolute_error(y_test, pred)
-    r2 = r2_score(y_test, pred)
+mlflow.log_param("n_estimators", 100)
+mlflow.log_param("max_depth", 10)
+mlflow.log_param("min_samples_split", 5)
+mlflow.log_param("random_state", 42)
 
-    mlflow.log_param("n_estimators", 100)
-    mlflow.log_param("max_depth", 10)
-    mlflow.log_param("min_samples_split", 5)
-    mlflow.log_param("random_state", 42)
+mlflow.log_metric("MAE", mae)
+mlflow.log_metric("R2", r2)
 
-    mlflow.log_metric("MAE", mae)
-    mlflow.log_metric("R2", r2)
-
-    mlflow.sklearn.log_model(
-        model,
-        artifact_path="model"
-    )
+mlflow.sklearn.log_model(
+    model,
+    artifact_path="model"
+)
